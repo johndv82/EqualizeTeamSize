@@ -36,13 +36,19 @@ namespace EqualizeTeamSize
             var resultado = new List<int>(teamSize);
             int reducidos = 0;
 
-            for (int i = 0; i < resultado.Count && reducidos < k; i++)
+            while (reducidos < k)
             {
-                if (resultado[i] > mejorTarget)
-                {
-                    resultado[i] = mejorTarget;
-                    reducidos++;
-                }
+                var id = resultado
+                    .Select((val, pos) => new { val, pos })
+                    .Where(x => x.val > mejorTarget)
+                    .OrderByDescending(x => x.val)
+                    .Select(x => x.pos)
+                    .FirstOrDefault(-1);
+
+                if (id == -1) break;
+
+                resultado[id] = mejorTarget;
+                reducidos++;
             }
 
             return resultado.ToArray();
